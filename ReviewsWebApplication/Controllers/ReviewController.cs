@@ -21,7 +21,7 @@ namespace ReviewsWebApplication.Controllers
         }
 
         /// <summary>
-        /// Получение всех отзывов по продукту
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetFeedbacksByProductId")]
@@ -40,7 +40,7 @@ namespace ReviewsWebApplication.Controllers
         }
 
         /// <summary>
-        /// Получение отзыва
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetReview")]
@@ -59,7 +59,7 @@ namespace ReviewsWebApplication.Controllers
         }
 
         /// <summary>
-        /// Удаление отзыва по id
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ id
         /// </summary>
         /// <returns></returns>
         [Authorize]
