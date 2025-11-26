@@ -21,21 +21,27 @@ namespace ReviewsWebApplication.Controllers
             _logger = logger;
             this.loginService = loginService;
         }
+
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] Login user)
         {
             if (user is null)
             {
-                return BadRequest("Invalid user request!!!");
+                return BadRequest("Invalid user request!");
             }
 
-            var res = loginService.CheckLogin(user);
-            if (res)
+            var result = loginService.CheckLogin(user);
+            if (result)
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["JWT:Secret"]));
+
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
                 var tokeOptions = new JwtSecurityToken(issuer: ConfigurationManager.AppSetting["JWT:ValidIssuer"], audience: ConfigurationManager.AppSetting["JWT:ValidAudience"], claims: new List<Claim>(), expires: DateTime.Now.AddMinutes(6), signingCredentials: signinCredentials);
+
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+
                 return Ok(new JWTTokenResponse
                 {
                     Token = tokenString

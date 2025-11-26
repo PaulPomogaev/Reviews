@@ -12,8 +12,8 @@ namespace Review.Domain.Helper
             List<Feedback> result = new List<Feedback>(count);
             for (int i = 1; i <= count; i++)
             {
-                Feedback f = CreateFeedback(random, i);
-                result.Add(f);
+                Feedback feedback = CreateFeedback(random, i);
+                result.Add(feedback);
             }
             return result.ToArray();
         }
@@ -40,42 +40,44 @@ namespace Review.Domain.Helper
             List<Rating> result = new List<Rating>(count);
             for (int i = 1; i <= count; i++)
             {
-                Rating fff = CreateRating(random, i);
-                result.Add(fff);
+                Rating rating = CreateRating(random, i);
+                result.Add(rating);
             }
             return result.ToArray();
         }
 
         public static Rating CreateRating(Random random, int i)
         {
-            Feedback f = CreateFeedback(random, i);
-            var couuntF = random.Next(1, 10);
-            var feedbacs = new List<Feedback>(couuntF);
-            for (int k = 1; k <= couuntF; k++)
+            //Feedback f = CreateFeedback(random, i);
+            var sampleCount = random.Next(1, 10);
+            var feedbackSamples = new List<Feedback>(sampleCount);
+            for (int k = 1; k <= sampleCount; k++)
             {
-                feedbacs.Add(CreateFeedback(random, k));
+                feedbackSamples.Add(CreateFeedback(random, k));
             }
-            var feedbacsAverage = feedbacs.Select(x => x.Grade).Average();
-            var fff = new Rating()
+
+            var feedbacsAverage = feedbackSamples.Select(x => x.Grade).Average();
+
+            var rating = new Rating()
             {
                 Id = i,
                 CreateDate = DateTime.Now.AddDays(random.Next(-100, 0)),
                 ProductId = random.Next(1, 10),
                 Grade = Math.Round(feedbacsAverage, 2)
             };
-            return fff;
+            return rating;
         }
 
         public static Login[] SetLogins()
         {
             var results = new List<Login>();
-            var login1 = new Login()
+            var login = new Login()
             {  
                 Id = 1,
                 UserName = "admin", 
                 Password = "admin" 
             };
-            results.Add(login1);
+            results.Add(login);
             return results.ToArray();
         }
     }
