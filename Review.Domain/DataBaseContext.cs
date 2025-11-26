@@ -14,7 +14,14 @@ namespace Review.Domain
         public DbSet<Login> Logins { get; set; }
         public DataBaseContext(DbContextOptions<DataBaseContext> options): base(options)
         {
-            Database.EnsureCreated();
+            try
+            {
+                Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database creation warning: {ex.Message}");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

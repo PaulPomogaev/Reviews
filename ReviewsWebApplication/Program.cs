@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Review.Domain;
 using Review.Domain.Services;
+using System.Reflection;
 using System.Text;
 using ConfigurationManager = Review.Domain.Services.ConfigurationManager;
 
@@ -14,72 +15,109 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+        builder.Services.AddControllers(); // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("V1", new OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Version = "V1",
-                Title = "WebAPI",
-                Description = "Secret_WebAPI"
+                Version = "v1",
+                Title = "Review API",
+                Description = "API for managing product reviews and ratings",
+                Contact = new OpenApiContact
+                {
+                    Name = "Paul_Pomogaev",
+                    Email = "paulslock1@gmail.com"
+                }
             });
+
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Name = "Authorization",
-                Description = "Bearer Authentication with JWT Token",
-                Type = SecuritySchemeType.Http
+                Description = "Enter 'Bearer' [space] and then your token",
             });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        {
-            new OpenApiSecurityScheme {
-                Reference = new OpenApiReference {
-                    Id = "Bearer",
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement 
+            {
+               {
+                  new OpenApiSecurityScheme 
+                  {
+                     Reference = new OpenApiReference 
+                     {
+                        Id = "Bearer",
                         Type = ReferenceType.SecurityScheme
-                }
-            },
-            new List < string > ()
-        }
-    });
+                     }
+                  },
+                  new List < string > ()
+               }
+            });
+
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (File.Exists(xmlPath))
+            {
+                options.IncludeXmlComments(xmlPath);
+            }
         });
+
+
         var connectionString = builder.Configuration.GetConnectionString("Review_Database");
-        builder.Services.AddDbContext<DataBaseContext>(x => x.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
+
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<ICacheService, CacheService>();
         builder.Services.AddScoped<LoginService>();
-        builder.Services.AddAuthentication(opt => {
-            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options => {
+
+
+        builder.Services.AddAuthentication(options => 
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options => 
+        {
+            var issuer = ConfigurationManager.AppSetting["JWT:ValidIssuer"];
+            var audience = ConfigurationManager.AppSetting["JWT:ValidAudience"];
+            var secret = ConfigurationManager.AppSetting["JWT:Secret"];
+
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = ConfigurationManager.AppSetting["JWT:ValidIssuer"],
-                ValidAudience = ConfigurationManager.AppSetting["JWT:ValidAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["JWT:Secret"]))
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
             };
         });
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(options => {
-                options.SwaggerEndpoint("/swagger/V1/swagger.json", "Secret_WebAPI");
+            app.UseSwaggerUI(options => 
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Review API v1");
             });
         }
+
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        app.UseCors(policy =>
+        policy.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+
         app.Run();
     }
 }
