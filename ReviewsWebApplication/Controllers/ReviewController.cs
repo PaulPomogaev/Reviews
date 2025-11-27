@@ -23,20 +23,12 @@ namespace ReviewsWebApplication.Controllers
         /// <summary>
         /// Получает все отзывы (до 100 записей в текущей инициализации).
         /// </summary>
-        /// <returns>Список отзывов.</returns>
+        /// <returns>Список всех отзывов.</returns>
         [HttpGet("GetAllReviewsAsync")]
         public async Task<ActionResult<List<Feedback>>> GetAllReviewsAsync()
         {
-            try
-            {
-                var result = await _reviewService.GetAllReviewsAsync();
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                return BadRequest(new { Error = e.Message });
-            }
+            var reviews = await _reviewService.GetAllReviewsAsync();
+            return Ok(reviews);
         }
 
         /// <summary>
@@ -46,57 +38,48 @@ namespace ReviewsWebApplication.Controllers
         [HttpGet("GetFeedbacksByProductId")]
         public async Task<ActionResult<List<Feedback>>> GetFeedbacksByProductIdAsync(int productId)
         {
-            try
-            {
-                var result = await _reviewService.GetFeedbacksByProductIdAsync(productId);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                return BadRequest(new { Error = e.Message });
-            }
+           var reviews = await _reviewService.GetFeedbacksByProductIdAsync(productId);
+           return Ok(reviews);
         }
 
         /// <summary>
-        /// Получение отзывов по Id отзыва
+        /// Получение конкретного отзыва по уникальному Id
         /// </summary>
-        /// <returns>Список отзывов по Id отзыва</returns>
+        /// <returns>Возвращает конкретный отзыв по Id</returns>
         [HttpGet("GetReview")]
-        public async Task<ActionResult<List<Feedback>>> GetReviewAsync(int feedbackId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Feedback>> GetReviewAsync(int feedbackId)
         {
-            try
+            var review = await _reviewService.GetReviewByIdAsync(feedbackId);
+                        
+            if(review == null)
             {
-                var result = await _reviewService.GetReviewAsync(feedbackId);
-                return Ok(result);
+                _logger.LogWarning($"Отзыв с ID={feedbackId} не найден");
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                return BadRequest(new { Error = e.Message });
-            }
+            return Ok(review);
         }
 
         /// <summary>
-        /// Удаляет отзыв по id
+        /// Удаляет отзыв по id отзыва
         /// </summary>
-        /// <returns></returns>
-        [Authorize]
+        /// <returns>204 (успешно) или 404 (не найден).</returns>
         [HttpDelete("DeleteReview")]
-        public async Task<ActionResult<List<Feedback>>> DeleteReviewAsync(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteReviewAsync(int feedbackId)
         {
-            try
+           
+            var result = await _reviewService.TryToDeleteReviewAsync(feedbackId);
+            if(!result)
             {
-                var result = await _reviewService.TryToDeleteReviewAsync(id);
-                if(result)
-                    return Ok();
-                return BadRequest(result);
+                _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={feedbackId}");
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message, e);
-                return BadRequest(new { Error = e.Message });
-            }
+
+            _logger.LogInformation($"Отзыв с с ID={feedbackId} успешно удалён");
+            return NoContent();
         }
     }
 }

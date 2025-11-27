@@ -23,7 +23,7 @@ namespace Review.Domain.Services
         /// </summary>
         /// <param name="feedbackId">Id отзыва</param>
         /// <returns>Список отзывов по Id отзыва</returns>
-        Task<IEnumerable<Feedback?>> GetReviewAsync(int feedbackId);
+        Task<Feedback?> GetReviewByIdAsync(int feedbackId);
 
         /// <summary>
         /// Удаление отзыва
