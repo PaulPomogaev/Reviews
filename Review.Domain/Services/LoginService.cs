@@ -20,8 +20,7 @@ namespace Review.Domain.Services
             }
 
             return databaseContext.Logins
-                .Any(x => x.UserName.Equals(login.UserName, StringComparison.OrdinalIgnoreCase) &&
-                          x.Password.Equals(login.Password, StringComparison.OrdinalIgnoreCase));
+                .Any(x => x.UserName == login.UserName && x.Password == login.Password);
         }
     }
 }

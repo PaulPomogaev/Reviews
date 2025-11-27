@@ -5,18 +5,25 @@ namespace Review.Domain.Services
     public interface IReviewService
     {
         /// <summary>
-        /// Получение все отзывов по продукту
+        /// Получение всех отзывов по продукту
         /// </summary>
-        /// <param name="id">Id продукта</param>
-        /// <returns></returns>
-        Task<List<Feedback>> GetFeedbacksByProductIdAsync(int id);
+        /// <param></param>
+        /// <returns>Список отзывов.</returns>
+        Task<List<Feedback>> GetAllReviewsAsync();
 
         /// <summary>
-        /// Получение все отзывов по продукту
+        /// Получение отзывов по Id продукта
         /// </summary>
-        /// <param name="id">Id отзыва</param>
-        /// <returns></returns>
-        Task<IEnumerable<Feedback?>> GetReviewAsync(int id);
+        /// <param name="productId">Id продукта</param>
+        /// <returns>Список отзывов с Id продукта.</returns>
+        Task<List<Feedback>> GetFeedbacksByProductIdAsync(int productId);
+
+        /// <summary>
+        /// Получение отзывов по Id отзыва
+        /// </summary>
+        /// <param name="feedbackId">Id отзыва</param>
+        /// <returns>Список отзывов по Id отзыва</returns>
+        Task<IEnumerable<Feedback?>> GetReviewAsync(int feedbackId);
 
         /// <summary>
         /// Удаление отзыва

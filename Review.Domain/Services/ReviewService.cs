@@ -11,9 +11,15 @@ namespace Review.Domain.Services
         {
             this.databaseContext = databaseContext;
         }
-        public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int id)
+
+        public async Task<List<Feedback>> GetAllReviewsAsync()
         {
-            return await databaseContext.Feedbacks.Where(x => x.ProductId == id).ToListAsync();
+            return await databaseContext.Feedbacks.ToListAsync();
+        }
+
+        public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int productId)
+        {
+            return await databaseContext.Feedbacks.Where(x => x.ProductId == productId).ToListAsync();
         }
 
         public async Task<IEnumerable<Feedback?>> GetReviewAsync(int id)
@@ -25,8 +31,8 @@ namespace Review.Domain.Services
         {
             try
             {
-                var Review = await databaseContext.Feedbacks.Where(x => x.Id == id).FirstOrDefaultAsync();
-                databaseContext.Feedbacks.Remove(Review!);
+                var review = await databaseContext.Feedbacks.Where(x => x.Id == id).FirstOrDefaultAsync();
+                databaseContext.Feedbacks.Remove(review!);
                 await databaseContext.SaveChangesAsync();
                 return true;
             }
