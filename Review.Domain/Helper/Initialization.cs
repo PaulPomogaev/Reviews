@@ -29,7 +29,7 @@ namespace Review.Domain.Helper
                 Text = LoremIpsum.Substring(0, random.Next(20, 100)),
                 UserId = random.Next(1, 10), 
                 RatingId = random.Next(1, 10),
-                status = (Status)random.Next(0, 2)
+                Status = (Status)random.Next(0, 2)
             };
         }
 
