@@ -11,6 +11,7 @@ namespace Review.Domain.Services
         {
             this.databaseContext = databaseContext;
         }
+
         public bool CheckLogin(Login login)
         {
             var containsLogin = databaseContext.Logins;

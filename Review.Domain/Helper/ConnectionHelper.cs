@@ -1,16 +1,20 @@
-﻿using StackExchange.Redis;
+﻿using Review.Domain.Configuration;
+using StackExchange.Redis;
 
-namespace Review.Domain.Services
+namespace Review.Domain.Helper
 {
     public class ConnectionHelper
     {
         static ConnectionHelper()
         {
-            ConnectionHelper.lazyConnection = new Lazy<ConnectionMultiplexer>(() => {
+            lazyConnection = new Lazy<ConnectionMultiplexer>(() => 
+            {
                 return ConnectionMultiplexer.Connect(ConfigurationManager.AppSetting["RedisURL"]);
             });
         }
+
         private static Lazy<ConnectionMultiplexer> lazyConnection;
+
         public static ConnectionMultiplexer Connection
         {
             get => lazyConnection.Value;

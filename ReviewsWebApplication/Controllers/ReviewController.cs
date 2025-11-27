@@ -7,7 +7,7 @@ namespace ReviewsWebApplication.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
+    [Authorize]
     public class ReviewController : ControllerBase
     {
 

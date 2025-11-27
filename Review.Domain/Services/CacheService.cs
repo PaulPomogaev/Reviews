@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StackExchange.Redis;
-using Review.Domain.Services;
+using Review.Domain.Helper;
 
 namespace Review.Domain.Services
 {

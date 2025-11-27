@@ -26,6 +26,7 @@
         public List<Feedback> Feedbacks { get; set; }
 
         public double Grade { get; set; }
+
         public Rating()
         {
             Feedbacks = new List<Feedback>();

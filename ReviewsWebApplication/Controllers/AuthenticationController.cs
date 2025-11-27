@@ -5,7 +5,7 @@ using Review.Domain.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ConfigurationManager = Review.Domain.Services.ConfigurationManager;
+using ConfigurationManager = Review.Domain.Configuration.ConfigurationManager;
 
 namespace ReviewsWebApplication.Controllers
 {
