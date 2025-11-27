@@ -44,11 +44,11 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetReview")]
-        public async Task<ActionResult<List<Feedback>>> GetReviewAsync(int feedbackId, int productId)
+        public async Task<ActionResult<List<Feedback>>> GetReviewAsync(int feedbackId)
         {
             try
             {
-                var result = await reviewService.GetReviewAsync(feedbackId, productId);
+                var result = await reviewService.GetReviewAsync(feedbackId);
                 return Ok(result);
             }
             catch (Exception e)

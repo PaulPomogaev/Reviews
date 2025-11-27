@@ -13,10 +13,10 @@ namespace Review.Domain.Services
         }
         public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int id)
         {
-            return await databaseContext.Feedbacks.ToListAsync();
+            return await databaseContext.Feedbacks.Where(x => x.ProductId == id).ToListAsync();
         }
 
-        public async Task<IEnumerable<Feedback?>> GetReviewAsync(int id, int productId)
+        public async Task<IEnumerable<Feedback?>> GetReviewAsync(int id)
         {
             return await databaseContext.Feedbacks.Where(x => x.Id == id).ToListAsync();
         }

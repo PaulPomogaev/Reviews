@@ -14,15 +14,14 @@ namespace Review.Domain.Services
 
         public bool CheckLogin(Login login)
         {
-            var containsLogin = databaseContext.Logins;
-            foreach (var item in containsLogin)
+            if(login?.UserName == null || login?.Password == null)
             {
-                if(item.UserName.Equals(login.UserName) && item.Password.Equals(login.Password))
-                {
-                    return true;
-                }
+                return false;
             }
-            return false;
+
+            return databaseContext.Logins
+                .Any(x => x.UserName.Equals(login.UserName, StringComparison.OrdinalIgnoreCase) &&
+                          x.Password.Equals(login.Password, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
