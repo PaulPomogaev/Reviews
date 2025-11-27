@@ -20,7 +20,6 @@ namespace Review.Domain.Services
                 if(item.UserName.Equals(login.UserName) && item.Password.Equals(login.Password))
                 {
                     return true;
-                    break;
                 }
             }
             return false;
