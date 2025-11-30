@@ -6,7 +6,7 @@
     public class Rating
     {
         /// <summary>
-        /// Id рейтинга
+        /// Id рейтинга 
         /// </summary>
         public int Id { get; set; }
 
