@@ -9,7 +9,7 @@ namespace Review.Domain.Helper
         {
             lazyConnection = new Lazy<ConnectionMultiplexer>(() => 
             {
-                return ConnectionMultiplexer.Connect(ConfigurationManager.AppSetting["RedisURL"]);
+                return ConnectionMultiplexer.Connect(builder.Configuration.AppSetting["RedisURL"]);
             });
         }
 

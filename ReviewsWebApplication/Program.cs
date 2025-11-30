@@ -5,9 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Review.Domain;
 using Review.Domain.Services;
+using ReviewsWebApplication.Configuration;
 using System.Reflection;
 using System.Text;
-using ConfigurationManager = Review.Domain.Configuration.ConfigurationManager;
 
 internal class Program
 {
@@ -73,6 +73,7 @@ internal class Program
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<ICacheService, CacheService>();
         builder.Services.AddScoped<LoginService>();
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 
 
         builder.Services.AddAuthentication(options => 
@@ -82,9 +83,9 @@ internal class Program
         })
         .AddJwtBearer(options => 
         {
-            var issuer = ConfigurationManager.AppSetting["JWT:ValidIssuer"];
-            var audience = ConfigurationManager.AppSetting["JWT:ValidAudience"];
-            var secret = ConfigurationManager.AppSetting["JWT:Secret"];
+            var issuer = builder.Configuration["JWT:ValidIssuer"];
+            var audience = builder.Configuration["JWT:ValidAudience"];
+            var secret = builder.Configuration["JWT:Secret"];
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
