@@ -14,17 +14,17 @@ namespace Review.Domain.Services
 
         public async Task<List<Feedback>> GetAllReviewsAsync()
         {
-            return await databaseContext.Feedbacks.ToListAsync();
+            return await databaseContext.Feedbacks.Include(f => f.Rating).ToListAsync();
         }
 
         public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int productId)
         {
-            return await databaseContext.Feedbacks.Where(x => x.ProductId == productId).ToListAsync();
+            return await databaseContext.Feedbacks.Where(x => x.ProductId == productId).Include(f => f.Rating).ToListAsync();
         }
 
         public async Task<Feedback?> GetReviewByIdAsync(int feedbackId)
         {
-            return await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
+            return await databaseContext.Feedbacks.Include(f => f.Rating).FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
         }
 
         public async Task<bool> TryToDeleteReviewAsync(int feedbackId)

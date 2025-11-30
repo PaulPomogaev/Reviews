@@ -1,4 +1,6 @@
-﻿namespace Review.Domain.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Review.Domain.Models
 {
     /// <summary>
     /// Рейтинг
@@ -23,6 +25,7 @@
         /// <summary>
         /// отзывы
         /// </summary>
+        [JsonIgnore]
         public List<Feedback> Feedbacks { get; set; }
 
         public double Grade { get; set; }
