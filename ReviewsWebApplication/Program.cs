@@ -71,7 +71,6 @@ internal class Program
         builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 
         builder.Services.AddScoped<IReviewService, ReviewService>();
-        builder.Services.AddScoped<ICacheService, CacheService>();
         builder.Services.AddScoped<LoginService>();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 
