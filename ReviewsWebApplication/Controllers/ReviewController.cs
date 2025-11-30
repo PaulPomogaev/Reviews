@@ -87,5 +87,25 @@ namespace ReviewsWebApplication.Controllers
             _logger.LogInformation($"Отзыв с с ID={id} успешно удалён");
             return NoContent();
         }
+
+        /// <summary>
+        /// Добавляет отзыв клиента
+        /// </summary>
+        /// <returns>201 (успешно) или 400 (не найден).</returns>
+        [HttpPost("AddReview")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Feedback>> AddReviewAsync([FromBody] AddFeedbackRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _reviewService.AddReviewAsync(request);
+            
+            _logger.LogInformation($"Отзыв с ID продукта={request.ProductId} добавлен");
+            return Created($"/Review/GetReview/{result.Id}", result);
+        }
     }
 }
