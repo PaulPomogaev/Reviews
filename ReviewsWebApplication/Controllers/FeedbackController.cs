@@ -9,7 +9,7 @@ namespace ReviewsWebApplication.Controllers
     [ApiController]
     [Route("api/[controller]s")]
     [Authorize]
-    public class ReviewController : ControllerBase
+    public class FeedbackController : ControllerBase
     {
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewService _reviewService;
@@ -17,7 +17,7 @@ namespace ReviewsWebApplication.Controllers
         public FeedbackController(ILogger<FeedbackController> logger, IFeedbackService feedbackService)
         {
             _logger = logger;
-            _reviewService = reviewService;
+            _feedbackService = feedbackService;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace ReviewsWebApplication.Controllers
                 _logger.LogWarning($"Отзыв с ID={id} не найден");
                 return NotFound();
             }
-            return Ok(review);
+            return Ok(feedback);
         }
 
         /// <summary>
