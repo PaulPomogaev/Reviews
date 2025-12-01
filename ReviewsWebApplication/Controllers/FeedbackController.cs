@@ -9,16 +9,16 @@ namespace ReviewsWebApplication.Controllers
     [ApiController]
     [Route("api/[controller]s")]
     [Authorize]
-    public class ReviewController : ControllerBase
+    public class FeedbackController : ControllerBase
     {
 
-        private readonly ILogger<ReviewController> _logger;
-        private readonly IReviewService _reviewService;
+        private readonly ILogger<FeedbackController> _logger;
+        private readonly IFeedbackService _feedbackService;
 
-        public ReviewController(ILogger<ReviewController> logger, IReviewService reviewService)
+        public FeedbackController(ILogger<FeedbackController> logger, IFeedbackService feedbackService)
         {
             _logger = logger;
-            _reviewService = reviewService;
+            _feedbackService = feedbackService;
         }
 
         /// <summary>
@@ -59,12 +59,12 @@ namespace ReviewsWebApplication.Controllers
         {
             var review = await _reviewService.GetByIdAsync(id);
                         
-            if(review == null)
+            if(feedback == null)
             {
                 _logger.LogWarning($"Отзыв с ID={id} не найден");
                 return NotFound();
             }
-            return Ok(review);
+            return Ok(feedback);
         }
 
         /// <summary>
@@ -92,20 +92,20 @@ namespace ReviewsWebApplication.Controllers
         /// Добавляет отзыв клиента
         /// </summary>
         /// <returns>201 (успешно) или 400 (не найден).</returns>
-        [HttpPost("AddReview")]
+        [HttpPost("AddFeedback")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Feedback>> AddReviewAsync([FromBody] AddFeedbackRequest request)
+        public async Task<ActionResult<Feedback>> AddFeedbackAsync([FromBody] AddFeedbackRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _reviewService.AddReviewAsync(request);
+            var result = await _feedbackService.AddFeedbackAsync(request);
             
             _logger.LogInformation($"Отзыв с ID продукта={request.ProductId} добавлен");
-            return Created($"/Review/GetReview/{result.Id}", result);
+            return Created($"/Feedback/GetFeedback/{result.Id}", result);
         }
     }
 }
