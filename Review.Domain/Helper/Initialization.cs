@@ -46,7 +46,7 @@ namespace Review.Domain.Helper
             return result.ToArray();
         }
 
-        public static Rating CreateRating(Random random, int i)
+        public static Rating CreateRating(Random random, int ratingId)
         {
             var sampleCount = random.Next(1, 10);
             var reviewSamples = new List<Models.Review>(sampleCount);
@@ -59,7 +59,7 @@ namespace Review.Domain.Helper
 
             var rating = new Rating()
             {
-                Id = i,
+                Id = ratingId,
                 CreateDate = DateTime.Now.AddDays(random.Next(-100, 0)),
                 ProductId = random.Next(1, 10),
                 Grade = Math.Round(reviewsAverage, 2)
