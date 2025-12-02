@@ -71,7 +71,7 @@ internal class Program
         var connectionString = builder.Configuration.GetConnectionString("Review_Database");
         builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 
-        builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+        builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<LoginService>();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 

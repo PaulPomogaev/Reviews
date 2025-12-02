@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Review.Domain.Services
 {
-    public class FeedbackService : IFeedbackService
+    public class ReviewService : IReviewService
     {
         private readonly DataBaseContext _databaseContext;
 
-        public FeedbackService(DataBaseContext databaseContext)
+        public ReviewService(DataBaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -29,12 +29,12 @@ namespace Review.Domain.Services
 
         public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
-            var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
+                var feedback = await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
 
-            if (review == null)
-            {
-                return false;
-            }
+                if(feedback == null)
+                {
+                    return false;
+                }
 
             review.Status = Status.Deleted;
             review.DeletedAt = DateTime.UtcNow;
