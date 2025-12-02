@@ -14,7 +14,7 @@ namespace ReviewsWebApplication.Controllers
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewService _reviewService;
 
-        public FeedbackController(ILogger<FeedbackController> logger, IFeedbackService feedbackService)
+        public ReviewController(ILogger<ReviewController> logger, IReviewService reviewService)
         {
             _logger = logger;
             _reviewService = reviewService;
