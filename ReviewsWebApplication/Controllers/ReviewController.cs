@@ -24,7 +24,7 @@ namespace ReviewsWebApplication.Controllers
         /// Получает все отзывы (до 100 записей в текущей инициализации).
         /// </summary>
         /// <returns>Список всех отзывов.</returns>
-        [HttpGet("GetAllReviewsAsync")]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetAllReviewsAsync()
         {
             var reviews = await _reviewService.GetAllReviewsAsync();
@@ -35,7 +35,7 @@ namespace ReviewsWebApplication.Controllers
         /// Получение отзывов по Id продукта
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
-        [HttpGet("GetReviewsByProductId")]
+        [HttpGet("ByProduct/{productId}")]
         public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetFeedbacksByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
@@ -46,7 +46,7 @@ namespace ReviewsWebApplication.Controllers
         /// Получение конкретного отзыва по уникальному Id
         /// </summary>
         /// <returns>Возвращает конкретный отзыв по Id</returns>
-        [HttpGet("GetReview")]
+        [HttpGet("{reviewId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Review.Domain.Models.Review>> GetReviewAsync(int reviewId)
@@ -65,7 +65,7 @@ namespace ReviewsWebApplication.Controllers
         /// Удаляет отзыв по id отзыва
         /// </summary>
         /// <returns>204 (успешно) или 404 (не найден).</returns>
-        [HttpDelete("DeleteReview")]
+        [HttpDelete("{reviewId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteReviewAsync(int reviewId)
