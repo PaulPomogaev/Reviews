@@ -2,7 +2,7 @@
 
 namespace Review.Domain.Services
 {
-    public interface IFeedbackService
+    public interface IReviewService
     {
         /// <summary>
         /// Получение всех отзывов по продукту

@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Review.Domain.Services
 {
-    public class FeedbackService : IFeedbackService
+    public class ReviewService : IReviewService
     {
         private readonly DataBaseContext _databaseContext;
 
-        public FeedbackService(DataBaseContext databaseContext)
+        public ReviewService(DataBaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -31,7 +31,7 @@ namespace Review.Domain.Services
         {
                 var review = await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
 
-                if(feedback == null)
+                if(review == null)
                 {
                     return false;
                 }
