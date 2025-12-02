@@ -5,39 +5,39 @@ namespace Review.Domain.Services
 {
     public class ReviewService : IReviewService
     {
-        private readonly DataBaseContext databaseContext;
+        private readonly DataBaseContext _databaseContext;
 
         public ReviewService(DataBaseContext databaseContext)
         {
-            this.databaseContext = databaseContext;
+            _databaseContext = databaseContext;
         }
 
-        public async Task<List<Feedback>> GetAllReviewsAsync()
+        public async Task<List<Models.Review>> GetAllReviewsAsync()
         {
-            return await databaseContext.Feedbacks.Include(f => f.Rating).ToListAsync();
+            return await _databaseContext.Reviews.Include(f => f.Rating).ToListAsync();
         }
 
-        public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int productId)
+        public async Task<List<Models.Review>> GetReviewsByProductIdAsync(int productId)
         {
-            return await databaseContext.Feedbacks.Where(x => x.ProductId == productId).Include(f => f.Rating).ToListAsync();
+            return await _databaseContext.Reviews.Where(x => x.ProductId == productId).Include(f => f.Rating).ToListAsync();
         }
 
-        public async Task<Feedback?> GetReviewByIdAsync(int feedbackId)
+        public async Task<Models.Review?> GetReviewByIdAsync(int reviewId)
         {
-            return await databaseContext.Feedbacks.Include(f => f.Rating).FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
+            return await _databaseContext.Reviews.Include(f => f.Rating).FirstOrDefaultAsync(review => review.Id == reviewId);
         }
 
-        public async Task<bool> TryToDeleteReviewAsync(int feedbackId)
+        public async Task<bool> TryToDeleteReviewAsync(int reviewId)
         {
-                var review = await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
+                var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
 
                 if(review == null)
                 {
                     return false;
                 }
 
-                databaseContext.Feedbacks.Remove(review);
-                await databaseContext.SaveChangesAsync();
+                _databaseContext.Reviews.Remove(review);
+                await _databaseContext.SaveChangesAsync();
                 return true;
         }
     }

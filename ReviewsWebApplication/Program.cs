@@ -16,7 +16,7 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
 
-        builder.Services.AddControllers(); // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddControllers(); 
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddSwaggerGen(options =>
@@ -40,7 +40,7 @@ internal class Program
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "Enter 'Bearer' [space] and then your token",
+                Description = "Enter your token",
             });
 
             options.AddSecurityRequirement(new OpenApiSecurityRequirement 

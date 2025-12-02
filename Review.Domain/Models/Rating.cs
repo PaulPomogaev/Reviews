@@ -26,13 +26,13 @@ namespace Review.Domain.Models
         /// отзывы
         /// </summary>
         [JsonIgnore]
-        public List<Feedback> Feedbacks { get; set; }
+        public List<Review> Reviews { get; set; }
 
         public double Grade { get; set; }
 
         public Rating()
         {
-            Feedbacks = new List<Feedback>();
+            Reviews = new List<Review>();
         }
     }
 }

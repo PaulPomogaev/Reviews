@@ -1,5 +1,4 @@
 ﻿using Review.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Review.Domain.Services
 {

@@ -9,21 +9,21 @@ namespace Review.Domain.Services
         /// </summary>
         /// <param></param>
         /// <returns>Список отзывов.</returns>
-        Task<List<Feedback>> GetAllReviewsAsync();
+        Task<List<Models.Review>> GetAllReviewsAsync();
 
         /// <summary>
         /// Получение отзывов по Id продукта
         /// </summary>
         /// <param name="productId">Id продукта</param>
         /// <returns>Список отзывов с Id продукта.</returns>
-        Task<List<Feedback>> GetFeedbacksByProductIdAsync(int productId);
+        Task<List<Models.Review>> GetReviewsByProductIdAsync(int productId);
 
         /// <summary>
         /// Получение отзывов по Id отзыва
         /// </summary>
         /// <param name="feedbackId">Id отзыва</param>
         /// <returns>Список отзывов по Id отзыва</returns>
-        Task<Feedback?> GetReviewByIdAsync(int feedbackId);
+        Task<Models.Review?> GetReviewByIdAsync(int reviewId);
 
         /// <summary>
         /// Удаление отзыва

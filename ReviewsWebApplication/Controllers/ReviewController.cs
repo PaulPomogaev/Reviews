@@ -25,7 +25,7 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список всех отзывов.</returns>
         [HttpGet("GetAllReviewsAsync")]
-        public async Task<ActionResult<List<Feedback>>> GetAllReviewsAsync()
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetAllReviewsAsync()
         {
             var reviews = await _reviewService.GetAllReviewsAsync();
             return Ok(reviews);
@@ -35,10 +35,10 @@ namespace ReviewsWebApplication.Controllers
         /// Получение отзывов по Id продукта
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
-        [HttpGet("GetFeedbacksByProductId")]
-        public async Task<ActionResult<List<Feedback>>> GetFeedbacksByProductIdAsync(int productId)
+        [HttpGet("GetReviewsByProductId")]
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetFeedbacksByProductIdAsync(int productId)
         {
-           var reviews = await _reviewService.GetFeedbacksByProductIdAsync(productId);
+           var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
            return Ok(reviews);
         }
 
@@ -49,13 +49,13 @@ namespace ReviewsWebApplication.Controllers
         [HttpGet("GetReview")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Feedback>> GetReviewAsync(int feedbackId)
+        public async Task<ActionResult<Review.Domain.Models.Review>> GetReviewAsync(int reviewId)
         {
-            var review = await _reviewService.GetReviewByIdAsync(feedbackId);
+            var review = await _reviewService.GetReviewByIdAsync(reviewId);
                         
             if(review == null)
             {
-                _logger.LogWarning($"Отзыв с ID={feedbackId} не найден");
+                _logger.LogWarning($"Отзыв с ID={reviewId} не найден");
                 return NotFound();
             }
             return Ok(review);
@@ -68,17 +68,17 @@ namespace ReviewsWebApplication.Controllers
         [HttpDelete("DeleteReview")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteReviewAsync(int feedbackId)
+        public async Task<ActionResult> DeleteReviewAsync(int reviewId)
         {
            
-            var result = await _reviewService.TryToDeleteReviewAsync(feedbackId);
+            var result = await _reviewService.TryToDeleteReviewAsync(reviewId);
             if(!result)
             {
-                _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={feedbackId}");
+                _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={reviewId}");
                 return NotFound();
             }
 
-            _logger.LogInformation($"Отзыв с с ID={feedbackId} успешно удалён");
+            _logger.LogInformation($"Отзыв с с ID={reviewId} успешно удалён");
             return NoContent();
         }
     }
