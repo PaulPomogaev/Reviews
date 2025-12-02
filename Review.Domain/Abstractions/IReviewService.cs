@@ -5,7 +5,7 @@ namespace Review.Domain.Services
     public interface IReviewService
     {
         /// <summary>
-        /// Получение всех отзывов по продукту
+        /// Получение всех отзывов
         /// </summary>
         /// <returns>Список отзывов.</returns>
         Task<List<Models.Review>> GetAllAsync();

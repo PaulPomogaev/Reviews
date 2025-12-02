@@ -29,16 +29,22 @@ namespace Review.Domain.Services
 
         public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
-                var review = await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
+            var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
 
-                if(review == null)
-                {
-                    return false;
-                }
+            if (review == null)
+            {
+                return false;
+            }
 
-                databaseContext.Feedbacks.Remove(review);
-                await databaseContext.SaveChangesAsync();
-                return true;
+            review.Status = Status.Deleted;
+            review.DeletedAt = DateTime.UtcNow;
+            review.DeletedBy = deletedBy;
+            review.DeleteReason = reason;
+
+            await RecalculateProductRating(review.ProductId);
+
+            await _databaseContext.SaveChangesAsync();
+            return true;
         }
 
     }

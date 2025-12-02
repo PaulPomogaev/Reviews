@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Review.Domain.Models
 {
-    public class AddFeedbackRequest
+    public class AddReviewRequest
     {
         public int ProductId { get; set; }
         public int UserId { get; set; }

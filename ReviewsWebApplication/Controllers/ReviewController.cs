@@ -11,7 +11,6 @@ namespace ReviewsWebApplication.Controllers
     [Authorize]
     public class ReviewController : ControllerBase
     {
-
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewService _reviewService;
 
@@ -95,7 +94,7 @@ namespace ReviewsWebApplication.Controllers
         [HttpPost("AddReview")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Feedback>> AddReviewAsync([FromBody] AddFeedbackRequest request)
+        public async Task<ActionResult<Review.Domain.Models.Review>> AddReviewAsync([FromBody] AddReviewRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +102,7 @@ namespace ReviewsWebApplication.Controllers
             }
 
             var result = await _reviewService.AddReviewAsync(request);
-            
+
             _logger.LogInformation($"Отзыв с ID продукта={request.ProductId} добавлен");
             return Created($"/Review/GetReview/{result.Id}", result);
         }
