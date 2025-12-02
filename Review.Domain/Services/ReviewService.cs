@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Review.Domain.Services
 {
-    public class FeedbackService : IFeedbackService
+    public class ReviewService : IReviewService
     {
         private readonly DataBaseContext _databaseContext;
 
-        public FeedbackService(DataBaseContext databaseContext)
+        public ReviewService(DataBaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
