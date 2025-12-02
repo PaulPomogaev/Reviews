@@ -29,12 +29,12 @@ namespace Review.Domain.Services
 
         public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
-                var feedback = await databaseContext.Feedbacks.FirstOrDefaultAsync(feedback => feedback.Id == feedbackId);
+            var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
 
-                if(feedback == null)
-                {
-                    return false;
-                }
+            if (review == null)
+            {
+                return false;
+            }
 
             review.Status = Status.Deleted;
             review.DeletedAt = DateTime.UtcNow;
