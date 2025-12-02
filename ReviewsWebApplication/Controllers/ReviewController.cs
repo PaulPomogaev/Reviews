@@ -36,7 +36,7 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
         [HttpGet("ByProduct/{productId}")]
-        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetFeedbacksByProductIdAsync(int productId)
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetReviewsByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
            return Ok(reviews);
@@ -68,10 +68,10 @@ namespace ReviewsWebApplication.Controllers
         [HttpDelete("{reviewId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteReviewAsync(int reviewId)
+        public async Task<ActionResult> DeleteReviewAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
            
-            var result = await _reviewService.TryToDeleteReviewAsync(reviewId);
+            var result = await _reviewService.TryToDeleteReviewAsync(reviewId, deletedBy ?? "system", reason);
             if(!result)
             {
                 _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={reviewId}");

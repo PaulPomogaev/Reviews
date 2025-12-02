@@ -27,6 +27,17 @@ namespace Review.Domain
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Models.Review>()
+                .Property(r => r.Status)
+                .HasDefaultValue(Status.Actual);
+
+            modelBuilder.Entity<Models.Review>()
+                .Property(r => r.IsDeleted)
+                .HasDefaultValue(false);
+
+            modelBuilder.Entity<Models.Review>()
+                .HasQueryFilter(r => !r.IsDeleted);
+
+            modelBuilder.Entity<Models.Review>()
                 .HasOne(p => p.Rating)
                 .WithMany(t => t.Reviews)
                 .HasForeignKey(p => p.RatingId)
