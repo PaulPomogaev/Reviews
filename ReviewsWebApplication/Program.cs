@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Review.Domain;
@@ -98,39 +97,62 @@ internal class Program
             };
         });
 
-        var app = builder.Build();
-
-        using (var scope = app.Services.CreateScope())
+        builder.Services.AddCors(options =>
         {
-            var context = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
-            try
+            options.AddDefaultPolicy(policy =>
             {
-                context.Database.EnsureCreated(); 
-            }
-            catch (Exception ex)
-            {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "Database initialization failed.");
-            }
-        }
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(options => 
+            app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Review API v1");
             });
         }
 
         app.UseHttpsRedirection();
+        app.UseCors();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.UseCors(policy =>
-        policy.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
+
+            if (app.Environment.IsDevelopment())
+            {
+                try
+                {
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Database error: {ex.Message}");
+                }
+            }
+            else
+            {
+                try
+                {
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Migration error: {ex.Message}");
+                }
+            }
+        }
+
 
         app.Run();
     }

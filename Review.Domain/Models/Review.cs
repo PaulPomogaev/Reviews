@@ -50,23 +50,23 @@
         /// Дата создания
         /// </summary>
         public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// Id рейтинга
-        /// </summary>
-        public int RatingId { get; set; }
-
-        /// <summary>
-        /// Рейтинг
-        /// </summary>
-        public Rating? Rating { get; set; }
-
+                
         /// <summary>
         /// Статус
         /// </summary>
-
         public Status Status { get; set; } = Status.Actual;
-        
+
+        /// <summary>
+        /// Средний рейтинг ВСЕГО продукта
+        /// </summary>
+        public double Rating { get; set; }
+
+
+        /// <summary>
+        /// Количество отзывов на конкретный продукт с уникальным ProductId
+        /// </summary>
+        public int ReviewCount { get; set; }
+
     }
 }
 

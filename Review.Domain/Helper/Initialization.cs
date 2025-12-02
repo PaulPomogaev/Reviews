@@ -10,61 +10,62 @@ namespace Review.Domain.Helper
         public static Models.Review[] SetReviews()
         {
             var count = 100;
-            List<Models.Review> result = new List<Models.Review>(count);
+            var reviews = new List<Models.Review>();
             for (int i = 1; i <= count; i++)
             {
-                Models.Review feedback = CreateReview(i);
-                result.Add(feedback);
+                var review = new Models.Review()
+                {
+                    Id = i,
+                    CreateDate = DateTime.Now.AddDays(_random.Next(-100, 0)),
+                    Grade = _random.Next(1, 6), 
+                    ProductId = _random.Next(1, 10),
+                    Text = LoremIpsum.Substring(0, _random.Next(20, 100)),
+                    UserId = _random.Next(1, 10),
+                    Status = (Status)_random.Next(0, 3),
+                    Rating = 0,
+                    ReviewCount = 0 
+                };
+                reviews.Add(review);
             }
-            return result.ToArray();
+            CalculateProductRatings(reviews);
+
+            return reviews.ToArray();
         }
 
-        public static Models.Review CreateReview(int reviewId)
+        private static void CalculateProductRatings(List<Models.Review> allReviews)
         {
-            return new Models.Review()
-            {
-                Id = reviewId,
-                CreateDate = DateTime.Now.AddDays(_random.Next(-100, 0)),
-                Grade = _random.Next(0, 6),
-                ProductId = _random.Next(1, 10),
-                Text = LoremIpsum.Substring(0, _random.Next(20, 100)),
-                UserId = _random.Next(1, 10), 
-                RatingId = _random.Next(1, 10),
-                Status = (Status)_random.Next(0, 3)
-            };
-        }
+            var reviewsByProduct = allReviews.Where(r => r.Status == Status.Actual).GroupBy(r => r.ProductId).ToList();
 
-        public static Rating[] SetRatings()
-        {
-            var count = 100;
-            List<Rating> result = new List<Rating>(count);
-            for (int i = 1; i <= count; i++)
-            {
-                Rating rating = CreateRating(i);
-                result.Add(rating);
-            }
-            return result.ToArray();
-        }
+            var productCalculations = new Dictionary<int, (double Rating, int Count)>();
 
-        public static Rating CreateRating(int ratingId)
-        {
-            var sampleCount = _random.Next(1, 10);
-            var reviewSamples = new List<Models.Review>(sampleCount);
-            for (int k = 1; k <= sampleCount; k++)
+            foreach (var group in reviewsByProduct)
             {
-                reviewSamples.Add(CreateReview(k));
+                var productId = group.Key;
+                var productReviews = group.ToList();
+
+                var reviewCount = productReviews.Count;
+
+                var totalGrade = productReviews.Sum(r => r.Grade);
+
+                var rating = reviewCount > 0 ? (double)totalGrade / reviewCount : 0;
+                rating = Math.Round(rating, 2);
+
+                productCalculations[productId] = (rating, reviewCount);
             }
 
-            var reviewsAverage = reviewSamples.Select(x => x.Grade).Average();
-
-            var rating = new Rating()
+            foreach (var review in allReviews)
             {
-                Id = ratingId,
-                CreateDate = DateTime.Now.AddDays(_random.Next(-100, 0)),
-                ProductId = _random.Next(1, 10),
-                Grade = Math.Round(reviewsAverage, 2)
-            };
-            return rating;
+                if (productCalculations.TryGetValue(review.ProductId, out var calculations))
+                {
+                    review.Rating = calculations.Rating;
+                    review.ReviewCount = calculations.Count;
+                }
+                else
+                {
+                    review.Rating = 0;
+                    review.ReviewCount = 0;
+                }
+            }
         }
 
         public static Login[] SetLogins()
