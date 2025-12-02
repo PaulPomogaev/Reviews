@@ -100,6 +100,20 @@ internal class Program
 
         var app = builder.Build();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
+            try
+            {
+                context.Database.EnsureCreated(); 
+            }
+            catch (Exception ex)
+            {
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "Database initialization failed.");
+            }
+        }
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

@@ -12,14 +12,7 @@ namespace Review.Domain
         public DbSet<Login> Logins { get; set; }
         public DataBaseContext(DbContextOptions<DataBaseContext> options): base(options)
         {
-            try
-            {
-                Database.EnsureCreated();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database creation warning: {ex.Message}");
-            }
+           
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,7 +29,7 @@ namespace Review.Domain
             var reviews = Initialization.SetReviews();
             var rating = Initialization.SetRatings();
 
-            modelBuilder.Entity<Models.Review>().HasData(Reviews);
+            modelBuilder.Entity<Models.Review>().HasData(reviews);
             modelBuilder.Entity<Rating>().HasData(rating);
 
             Login[] login = Initialization.SetLogins();
