@@ -20,27 +20,7 @@
         /// </summary>
         public int UserId { get; set; }
 
-        private bool _isDeleted = false;
-        private Status _status = Status.Actual;
-
-        /// <summary>
-        /// Состояние отзыва (удалён-не удалён)
-        /// </summary>
-        /// <remarks>
-        /// Автоматически синхронизируется со свойством <see cref="Status"/>.
-        /// При установке <c>IsDeleted = true</c> → <c>Status = Status.Deleted</c>.
-        /// При установке <c>IsDeleted = false</c> → <c>Status = Status.Actual</c>.
-        /// </remarks>
-        public bool IsDeleted 
-        { 
-            get => _isDeleted; 
-            set
-            {
-                _isDeleted = value;
-                _status = value ? Status.Deleted : Status.Actual;
-            }
-        }
-
+                
         /// <summary>
         /// Дата и время удаления отзыва
         /// </summary>
@@ -84,20 +64,9 @@
         /// <summary>
         /// Статус
         /// </summary>
-        /// <remarks>
-        /// Автоматически синхронизируется со свойством <see cref="IsDeleted"/>.
-        /// При установке <c>Status = Status.Deleted</c> → <c>IsDeleted = true</c>.
-        /// При установке <c>Status = Status.Actual</c> → <c>IsDeleted = false</c>.
-        /// </remarks>
-        public Status Status
-        {
-            get => _status;
-            set
-            {
-                _status = value;
-                _isDeleted = value == Status.Deleted;
-            }
-        }
+
+        public Status Status { get; set; } = Status.Actual;
+        
     }
 }
 

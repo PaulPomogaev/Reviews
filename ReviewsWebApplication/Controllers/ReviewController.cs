@@ -71,7 +71,7 @@ namespace ReviewsWebApplication.Controllers
         public async Task<ActionResult> DeleteReviewAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
            
-            var result = await _reviewService.TryToDeleteReviewAsync(reviewId, deletedBy ?? "system", reason);
+            var result = await _reviewService.TryToDeleteReviewAsync(reviewId, deletedBy, reason);
             if(!result)
             {
                 _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={reviewId}");

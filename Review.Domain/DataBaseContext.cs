@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Review.Domain.Helper;
 using Review.Domain.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Review.Domain
 {
@@ -27,15 +25,7 @@ namespace Review.Domain
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Models.Review>()
-                .Property(r => r.Status)
-                .HasDefaultValue(Status.Actual);
-
-            modelBuilder.Entity<Models.Review>()
-                .Property(r => r.IsDeleted)
-                .HasDefaultValue(false);
-
-            modelBuilder.Entity<Models.Review>()
-                .HasQueryFilter(r => !r.IsDeleted);
+                 .HasQueryFilter(r => r.Status == Status.Actual);
 
             modelBuilder.Entity<Models.Review>()
                 .HasOne(p => p.Rating)
@@ -43,11 +33,11 @@ namespace Review.Domain
                 .HasForeignKey(p => p.RatingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var Feedbacks = Initialization.SetFeedbacks();
-            var Rating = Initialization.SetRatings();
+            var reviews = Initialization.SetReviews();
+            var rating = Initialization.SetRatings();
 
-            modelBuilder.Entity<Models.Review>().HasData(Feedbacks);
-            modelBuilder.Entity<Rating>().HasData(Rating);
+            modelBuilder.Entity<Models.Review>().HasData(Reviews);
+            modelBuilder.Entity<Rating>().HasData(rating);
 
             Login[] login = Initialization.SetLogins();
             modelBuilder.Entity<Login>().HasData(login);

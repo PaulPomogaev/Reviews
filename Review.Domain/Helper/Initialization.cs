@@ -5,20 +5,20 @@ namespace Review.Domain.Helper
     public static class Initialization
     {
         private const string LoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-        public static Models.Review[] SetFeedbacks()
+        public static Models.Review[] SetReviews()
         {
             var count = 100;
             var random = new Random();
             List<Models.Review> result = new List<Models.Review>(count);
             for (int i = 1; i <= count; i++)
             {
-                Models.Review feedback = CreateFeedback(random, i);
+                Models.Review feedback = CreateReview(random, i);
                 result.Add(feedback);
             }
             return result.ToArray();
         }
 
-        public static Models.Review CreateFeedback(Random random, int i)
+        public static Models.Review CreateReview(Random random, int i)
         {
             return new Models.Review()
             {
@@ -29,7 +29,7 @@ namespace Review.Domain.Helper
                 Text = LoremIpsum.Substring(0, random.Next(20, 100)),
                 UserId = random.Next(1, 10), 
                 RatingId = random.Next(1, 10),
-                Status = (Status)random.Next(0, 2)
+                Status = (Status)random.Next(0, 3)
             };
         }
 
@@ -48,22 +48,21 @@ namespace Review.Domain.Helper
 
         public static Rating CreateRating(Random random, int i)
         {
-            //Review f = CreateFeedback(random, i);
             var sampleCount = random.Next(1, 10);
-            var feedbackSamples = new List<Models.Review>(sampleCount);
+            var reviewSamples = new List<Models.Review>(sampleCount);
             for (int k = 1; k <= sampleCount; k++)
             {
-                feedbackSamples.Add(CreateFeedback(random, k));
+                reviewSamples.Add(CreateReview(random, k));
             }
 
-            var feedbacsAverage = feedbackSamples.Select(x => x.Grade).Average();
+            var reviewsAverage = reviewSamples.Select(x => x.Grade).Average();
 
             var rating = new Rating()
             {
                 Id = i,
                 CreateDate = DateTime.Now.AddDays(random.Next(-100, 0)),
                 ProductId = random.Next(1, 10),
-                Grade = Math.Round(feedbacsAverage, 2)
+                Grade = Math.Round(reviewsAverage, 2)
             };
             return rating;
         }
