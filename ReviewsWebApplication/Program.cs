@@ -84,6 +84,10 @@ internal class Program
             var issuer = builder.Configuration["JWT:ValidIssuer"];
             var audience = builder.Configuration["JWT:ValidAudience"];
             var secret = builder.Configuration["JWT:Secret"];
+            if (string.IsNullOrEmpty(secret))
+            {
+                throw new InvalidOperationException("JWT Secret не прошёл конфигурацию в appsettings.json");
+            }
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
