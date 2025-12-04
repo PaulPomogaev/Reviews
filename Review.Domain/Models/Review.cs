@@ -56,17 +56,6 @@
         /// </summary>
         public Status Status { get; set; } = Status.Actual;
 
-        /// <summary>
-        /// Средний рейтинг ВСЕГО продукта
-        /// </summary>
-        public double Rating { get; set; }
-
-
-        /// <summary>
-        /// Количество отзывов на конкретный продукт с уникальным ProductId
-        /// </summary>
-        public int ReviewCount { get; set; }
-
     }
 }
 

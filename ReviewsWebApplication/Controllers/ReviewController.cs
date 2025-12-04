@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Review.Domain.Models;
 using Review.Domain.Services;
+using ReviewsWebApplication.Dto;
 
 namespace ReviewsWebApplication.Controllers
 {
@@ -39,7 +40,22 @@ namespace ReviewsWebApplication.Controllers
         public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetByProductIdAsync(productId);
-           return Ok(reviews);
+           var (rating, reviewCount) = await _reviewService.GetProductRatingAsync(productId);
+
+            var dtos = reviews.Select(r => new ReviewWithProductRatingDto
+            {
+                Id = r.Id,
+                ProductId = r.ProductId,
+                UserId = r.UserId,
+                Text = r.Text,
+                Grade = r.Grade,
+                CreateDate = r.CreateDate,
+                Status = r.Status,
+                Rating = rating,          
+                ReviewCount = reviewCount 
+            }).ToList();
+
+            return Ok(dtos);
         }
 
         /// <summary>

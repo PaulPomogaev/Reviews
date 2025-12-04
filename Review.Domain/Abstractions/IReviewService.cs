@@ -30,5 +30,10 @@ namespace Review.Domain.Services
         /// <param name="reviewId">Id отзыва</param>
         /// <returns></returns>
         Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null);
+
+        /// <summary>
+        /// Получает усреднённый рейтинг и количество отзывов по продукту
+        /// </summary>
+        Task<(double Rating, int ReviewCount)> GetProductRatingAsync(int productId);
     }
 }

@@ -22,52 +22,15 @@ namespace Review.Domain.Helper
                     Text = LoremIpsum.Substring(0, _random.Next(20, 100)),
                     UserId = _random.Next(1, 10),
                     Status = (Status)_random.Next(0, 3),
-                    Rating = 0,
-                    ReviewCount = 0 
+                    
                 };
                 reviews.Add(review);
             }
-            CalculateProductRatings(reviews);
-
+          
             return reviews.ToArray();
         }
 
-        private static void CalculateProductRatings(List<Models.Review> allReviews)
-        {
-            var reviewsByProduct = allReviews.Where(r => r.Status == Status.Actual).GroupBy(r => r.ProductId).ToList();
-
-            var productCalculations = new Dictionary<int, (double Rating, int Count)>();
-
-            foreach (var group in reviewsByProduct)
-            {
-                var productId = group.Key;
-                var productReviews = group.ToList();
-
-                var reviewCount = productReviews.Count;
-
-                var totalGrade = productReviews.Sum(r => r.Grade);
-
-                var rating = reviewCount > 0 ? (double)totalGrade / reviewCount : 0;
-                rating = Math.Round(rating, 2);
-
-                productCalculations[productId] = (rating, reviewCount);
-            }
-
-            foreach (var review in allReviews)
-            {
-                if (productCalculations.TryGetValue(review.ProductId, out var calculations))
-                {
-                    review.Rating = calculations.Rating;
-                    review.ReviewCount = calculations.Count;
-                }
-                else
-                {
-                    review.Rating = 0;
-                    review.ReviewCount = 0;
-                }
-            }
-        }
-
+        
         public static Login[] SetLogins()
         {
             var results = new List<Login>();
