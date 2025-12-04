@@ -15,7 +15,6 @@ namespace Review.Domain.Helper
             {
                 var review = new Models.Review()
                 {
-                    Id = i,
                     CreateDate = DateTime.Now.AddDays(_random.Next(-100, 0)),
                     Grade = _random.Next(1, 6), 
                     ProductId = _random.Next(1, 10),
@@ -36,7 +35,6 @@ namespace Review.Domain.Helper
             var results = new List<Login>();
             var login = new Login()
             {  
-                Id = 1,
                 UserName = "admin", 
                 Password = "admin" 
             };
