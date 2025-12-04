@@ -31,5 +31,10 @@ namespace Review.Domain.Services
         /// <returns></returns>
         Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null);
 
+        /// <summary>
+        /// Добавление отзыва
+        /// </summary>
+        /// <returns>Новый отзыв пользователя</returns>
+        Task<Models.Review> AddAsync(AddReviewRequest request);
     }
 }

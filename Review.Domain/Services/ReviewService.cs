@@ -45,5 +45,22 @@ namespace Review.Domain.Services
             return true;
         }
 
+        public async Task<Models.Review> AddAsync(AddReviewRequest request)
+        {
+            var review = new Models.Review
+            {
+                ProductId = request.ProductId,
+                UserId = request.UserId,
+                Text = request.Text,
+                Grade = request.Grade,
+                CreateDate = DateTime.UtcNow,
+                Status = Status.Actual
+            };
+
+            _databaseContext.Reviews.Add(review);
+            await _databaseContext.SaveChangesAsync();
+
+            return review;
+        }
     }
 }
