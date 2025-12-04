@@ -37,25 +37,27 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
         [HttpGet("by-product/{productId}")]
-        public async Task<ActionResult<List<ReviewWithProductRatingDto>>> GetByProductIdAsync(int productId)
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetByProductIdAsync(productId);
-           var (rating, reviewCount) = await _reviewService.GetProductRatingAsync(productId);
+           return Ok(reviews);
+        }
 
-            var dtos = reviews.Select(r => new ReviewWithProductRatingDto
+
+        /// <summary>
+        /// Получение рейтинга по запросу
+        /// </summary>
+        /// <returns>Рейтинг товавра по productId.</returns>
+        [HttpGet("products/{productId}/rating")]
+        public async Task<ActionResult<ProductRatingDto>> GetProductRating(int productId)
+        {
+            var reviews = await _reviewService.GetByProductIdAsync(productId);
+            var actual = reviews.Where(r => r.Status == Status.Actual);
+            return new ProductRatingDto
             {
-                Id = r.Id,
-                ProductId = r.ProductId,
-                UserId = r.UserId,
-                Text = r.Text,
-                Grade = r.Grade,
-                CreateDate = r.CreateDate,
-                Status = r.Status,
-                Rating = rating,          
-                ReviewCount = reviewCount 
-            }).ToList();
-
-            return Ok(dtos);
+                Rating = actual.Any() ? Math.Round(actual.Average(r => r.Grade), 2) : 0,
+                ReviewCount = actual.Count()
+            };
         }
 
         /// <summary>

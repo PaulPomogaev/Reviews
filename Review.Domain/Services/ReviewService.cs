@@ -45,15 +45,5 @@ namespace Review.Domain.Services
                 return true;
         }
 
-        public async Task<(double Rating, int ReviewCount)> GetProductRatingAsync(int productId)
-        {
-            var actualReviews = await _databaseContext.Reviews.Where(r => r.ProductId == productId && r.Status == Status.Actual).ToListAsync();
-
-            var count = actualReviews.Count;
-
-            var rating = count > 0 ? Math.Round(actualReviews.Average(r => r.Grade), 2) : 0.0;
-
-            return (rating, count);
-        }
     }
 }
