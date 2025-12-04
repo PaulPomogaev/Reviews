@@ -40,9 +40,7 @@ namespace Review.Domain.Services
             review.DeletedAt = DateTime.UtcNow;
             review.DeletedBy = deletedBy;
             review.DeleteReason = reason;
-
-            await RecalculateProductRating(review.ProductId);
-
+                       
             await _databaseContext.SaveChangesAsync();
             return true;
         }

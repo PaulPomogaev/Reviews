@@ -91,20 +91,20 @@ namespace ReviewsWebApplication.Controllers
         /// Добавляет отзыв клиента
         /// </summary>
         /// <returns>201 (успешно) или 400 (не найден).</returns>
-        [HttpPost("AddReview")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Review.Domain.Models.Review>> AddReviewAsync([FromBody] AddReviewRequest request)
+        public async Task<ActionResult<Review.Domain.Models.Review>> AddAsync([FromBody] AddReviewRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _reviewService.AddReviewAsync(request);
+            var review = await _reviewService.AddAsync(request);
 
-            _logger.LogInformation($"Отзыв с ID продукта={request.ProductId} добавлен");
-            return Created($"/Review/GetReview/{result.Id}", result);
+            _logger.LogInformation($"Отзыв с ID продукта={review.ProductId} добавлен");
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = review.Id }, review);
         }
     }
 }
