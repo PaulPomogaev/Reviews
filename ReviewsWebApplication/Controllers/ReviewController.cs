@@ -25,9 +25,9 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список всех отзывов.</returns>
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetAllReviewsAsync()
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetAllAsync()
         {
-            var reviews = await _reviewService.GetAllReviewsAsync();
+            var reviews = await _reviewService.GetAllAsync();
             return Ok(reviews);
         }
 
@@ -36,9 +36,9 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
         [HttpGet("ByProduct/{productId}")]
-        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetReviewsByProductIdAsync(int productId)
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
         {
-           var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
+           var reviews = await _reviewService.GetByProductIdAsync(productId);
            return Ok(reviews);
         }
 
@@ -49,9 +49,9 @@ namespace ReviewsWebApplication.Controllers
         [HttpGet("{reviewId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Review.Domain.Models.Review>> GetReviewAsync(int reviewId)
+        public async Task<ActionResult<Review.Domain.Models.Review>> GetByIdAsync(int reviewId)
         {
-            var review = await _reviewService.GetReviewByIdAsync(reviewId);
+            var review = await _reviewService.GetByIdAsync(reviewId);
                         
             if(review == null)
             {
@@ -68,10 +68,10 @@ namespace ReviewsWebApplication.Controllers
         [HttpDelete("{reviewId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteReviewAsync(int reviewId, string deletedBy = "system", string? reason = null)
+        public async Task<ActionResult> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
            
-            var result = await _reviewService.TryToDeleteReviewAsync(reviewId, deletedBy, reason);
+            var result = await _reviewService.DeleteAsync(reviewId, deletedBy, reason);
             if(!result)
             {
                 _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={reviewId}");

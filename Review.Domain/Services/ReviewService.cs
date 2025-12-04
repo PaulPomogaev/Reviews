@@ -12,22 +12,22 @@ namespace Review.Domain.Services
             _databaseContext = databaseContext;
         }
 
-        public async Task<List<Models.Review>> GetAllReviewsAsync()
+        public async Task<List<Models.Review>> GetAllAsync()
         {
             return await _databaseContext.Reviews.ToListAsync();
         }
 
-        public async Task<List<Models.Review>> GetReviewsByProductIdAsync(int productId)
+        public async Task<List<Models.Review>> GetByProductIdAsync(int productId)
         {
             return await _databaseContext.Reviews.Where(x => x.ProductId == productId).ToListAsync();
         }
 
-        public async Task<Models.Review?> GetReviewByIdAsync(int reviewId)
+        public async Task<Models.Review?> GetByIdAsync(int reviewId)
         {
             return await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
         }
 
-        public async Task<bool> TryToDeleteReviewAsync(int reviewId, string deletedBy = "system", string? reason = null)
+        public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
                 var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
 
