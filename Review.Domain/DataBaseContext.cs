@@ -18,13 +18,7 @@ namespace Review.Domain
             modelBuilder.Entity<Models.Review>()
                  .HasQueryFilter(r => r.Status == Status.Actual);
 
-
-            var reviews = Initialization.SetReviews();
-
-            modelBuilder.Entity<Models.Review>().HasData(reviews);
-
-            Login[] login = Initialization.SetLogins();
-            modelBuilder.Entity<Login>().HasData(login);
+                        
         }
     }
 }

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Review.Domain;
+using Review.Domain.Helper;
 using Review.Domain.Services;
 using ReviewsWebApplication.Configuration;
 using System.Reflection;
@@ -131,32 +133,38 @@ internal class Program
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DataBaseContext>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
             if (app.Environment.IsDevelopment())
             {
                 try
                 {
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Database error: {ex.Message}");
-                }
-            }
-            else
-            {
-                try
-                {
                     context.Database.Migrate();
+                    if (app.Environment.IsDevelopment())
+                    {
+                        
+                        logger.LogInformation("Очистка и повторная генерация тестовых данных...");
+
+                        context.Database.ExecuteSqlRaw("DELETE FROM Reviews");
+                        context.Database.ExecuteSqlRaw("DELETE FROM Logins");
+
+                        var reviews = Initialization.SetReviews();
+                        var logins = Initialization.SetLogins();
+
+                        context.Reviews.AddRange(reviews);
+                        context.Logins.AddRange(logins);
+                        context.SaveChanges();
+
+                        logger.LogInformation($"Сгенерировано {reviews.Length} отзывов и {logins.Length} логинов.");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Migration error: {ex.Message}");
+                    logger.LogError(ex, "Ошибка инициализации базы данных");
+                    throw;
                 }
             }
         }
-
 
         app.Run();
     }
