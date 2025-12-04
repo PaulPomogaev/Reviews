@@ -37,7 +37,7 @@ namespace ReviewsWebApplication.Controllers
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
         [HttpGet("by-product/{productId}")]
-        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
+        public async Task<ActionResult<List<ReviewWithProductRatingDto>>> GetByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetByProductIdAsync(productId);
            var (rating, reviewCount) = await _reviewService.GetProductRatingAsync(productId);
