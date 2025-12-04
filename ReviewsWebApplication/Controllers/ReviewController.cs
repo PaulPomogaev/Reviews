@@ -104,7 +104,7 @@ namespace ReviewsWebApplication.Controllers
             var review = await _reviewService.AddAsync(request);
 
             _logger.LogInformation($"Отзыв с ID продукта={review.ProductId} добавлен");
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = review.Id }, review);
+            return Created($"/api/Review/{review.Id}", review);
         }
     }
 }
