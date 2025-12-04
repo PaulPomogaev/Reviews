@@ -7,7 +7,7 @@ using ReviewsWebApplication.Dto;
 namespace ReviewsWebApplication.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
     [Authorize]
     public class ReviewController : ControllerBase
     {
@@ -36,28 +36,16 @@ namespace ReviewsWebApplication.Controllers
         /// Получение отзывов по Id продукта
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
-        [HttpGet("by-product/{productId}")]
-        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync([FromQuery] int? productId = null)
         {
-           var reviews = await _reviewService.GetByProductIdAsync(productId);
-           return Ok(reviews);
-        }
-
-
-        /// <summary>
-        /// Получение рейтинга по запросу
-        /// </summary>
-        /// <returns>Рейтинг товавра по productId.</returns>
-        [HttpGet("products/{productId}/rating")]
-        public async Task<ActionResult<ProductRatingDto>> GetProductRating(int productId)
-        {
-            var reviews = await _reviewService.GetByProductIdAsync(productId);
-            var actual = reviews.Where(r => r.Status == Status.Actual);
-            return new ProductRatingDto
+            if (!productId.HasValue)
             {
-                Rating = actual.Any() ? Math.Round(actual.Average(r => r.Grade), 2) : 0,
-                ReviewCount = actual.Count()
-            };
+                return BadRequest("Не указан productId");
+            }
+
+            var reviews = await _reviewService.GetByProductIdAsync(productId.Value);
+           return Ok(reviews);
         }
 
         /// <summary>
