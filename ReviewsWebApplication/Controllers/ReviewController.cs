@@ -6,7 +6,7 @@ using Review.Domain.Services;
 namespace ReviewsWebApplication.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     public class ReviewController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace ReviewsWebApplication.Controllers
         /// Получает все отзывы (до 100 записей в текущей инициализации).
         /// </summary>
         /// <returns>Список всех отзывов.</returns>
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetAllAsync()
         {
             var reviews = await _reviewService.GetAllAsync();
@@ -35,7 +35,7 @@ namespace ReviewsWebApplication.Controllers
         /// Получение отзывов по Id продукта
         /// </summary>
         /// <returns>Список отзывов с Id продукта.</returns>
-        [HttpGet("ByProduct/{productId}")]
+        [HttpGet("by-product/{productId}")]
         public async Task<ActionResult<List<Review.Domain.Models.Review>>> GetByProductIdAsync(int productId)
         {
            var reviews = await _reviewService.GetByProductIdAsync(productId);
@@ -46,39 +46,39 @@ namespace ReviewsWebApplication.Controllers
         /// Получение конкретного отзыва по уникальному Id
         /// </summary>
         /// <returns>Возвращает конкретный отзыв по Id</returns>
-        [HttpGet("{reviewId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Review.Domain.Models.Review>> GetByIdAsync(int reviewId)
+        public async Task<ActionResult<Review.Domain.Models.Review>> GetByIdAsync(int id)
         {
-            var review = await _reviewService.GetByIdAsync(reviewId);
+            var review = await _reviewService.GetByIdAsync(id);
                         
             if(review == null)
             {
-                _logger.LogWarning($"Отзыв с ID={reviewId} не найден");
+                _logger.LogWarning($"Отзыв с ID={id} не найден");
                 return NotFound();
             }
             return Ok(review);
         }
 
         /// <summary>
-        /// Удаляет отзыв по id отзыва
+        /// Удаляет отзыв по id отзыва (soft-delete)
         /// </summary>
         /// <returns>204 (успешно) или 404 (не найден).</returns>
-        [HttpDelete("{reviewId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
+        public async Task<ActionResult> DeleteAsync(int id, string deletedBy = "system", string? reason = null)
         {
            
-            var result = await _reviewService.DeleteAsync(reviewId, deletedBy, reason);
+            var result = await _reviewService.DeleteAsync(id, deletedBy, reason);
             if(!result)
             {
-                _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={reviewId}");
+                _logger.LogWarning($"Попытка удаления несуществующего отзыва с ID={id}");
                 return NotFound();
             }
 
-            _logger.LogInformation($"Отзыв с с ID={reviewId} успешно удалён");
+            _logger.LogInformation($"Отзыв с с ID={id} успешно удалён");
             return NoContent();
         }
     }
