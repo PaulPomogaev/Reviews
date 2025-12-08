@@ -5,7 +5,7 @@ namespace Review.Domain.Services
     public interface IReviewService
     {
         /// <summary>
-        /// Получение всех отзывов по продукту
+        /// Получение всех отзывов
         /// </summary>
         /// <returns>Список отзывов.</returns>
         Task<List<Models.Review>> GetAllAsync();
@@ -31,5 +31,10 @@ namespace Review.Domain.Services
         /// <returns></returns>
         Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null);
 
+        /// <summary>
+        /// Добавление отзыва
+        /// </summary>
+        /// <returns>Новый отзыв пользователя</returns>
+        Task<Models.Review> AddAsync(AddReviewRequest request);
     }
 }

@@ -29,21 +29,38 @@ namespace Review.Domain.Services
 
         public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
         {
-                var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
+            var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
 
-                if(review == null)
-                {
-                    return false;
-                }
+            if (review == null)
+            {
+                return false;
+            }
 
             review.Status = Status.Deleted;
             review.DeletedAt = DateTime.UtcNow;
             review.DeletedBy = deletedBy;
             review.DeleteReason = reason;
-
+                       
             await _databaseContext.SaveChangesAsync();
-                return true;
+            return true;
         }
 
+        public async Task<Models.Review> AddAsync(AddReviewRequest request)
+        {
+            var review = new Models.Review
+            {
+                ProductId = request.ProductId,
+                UserId = request.UserId,
+                Text = request.Text,
+                Grade = request.Grade,
+                CreateDate = DateTime.UtcNow,
+                Status = Status.Actual
+            };
+
+            _databaseContext.Reviews.Add(review);
+            await _databaseContext.SaveChangesAsync();
+
+            return review;
+        }
     }
 }
