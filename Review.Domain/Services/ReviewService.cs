@@ -5,35 +5,45 @@ namespace Review.Domain.Services
 {
     public class ReviewService : IReviewService
     {
-        private readonly DataBaseContext databaseContext;
+        private readonly DataBaseContext _databaseContext;
 
         public ReviewService(DataBaseContext databaseContext)
         {
-            this.databaseContext = databaseContext;
-        }
-        public async Task<List<Feedback>> GetFeedbacksByProductIdAsync(int id)
-        {
-            return await databaseContext.Feedbacks.ToListAsync();
+            _databaseContext = databaseContext;
         }
 
-        public async Task<IEnumerable<Feedback?>> GetReviewAsync(int id, int productId)
+        public async Task<List<Models.Review>> GetAllAsync()
         {
-            return await databaseContext.Feedbacks.Where(x => x.Id == id).ToListAsync();
+            return await _databaseContext.Reviews.ToListAsync();
         }
 
-        public async Task<bool> TryToDeleteReviewAsync(int id)
+        public async Task<List<Models.Review>> GetByProductIdAsync(int productId)
         {
-            try
-            {
-                var Review = await databaseContext.Feedbacks.Where(x => x.Id == id).FirstOrDefaultAsync();
-                databaseContext.Feedbacks.Remove(Review!);
-                await databaseContext.SaveChangesAsync();
+            return await _databaseContext.Reviews.Where(x => x.ProductId == productId).ToListAsync();
+        }
+
+        public async Task<Models.Review?> GetByIdAsync(int reviewId)
+        {
+            return await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
+        }
+
+        public async Task<bool> DeleteAsync(int reviewId, string deletedBy = "system", string? reason = null)
+        {
+                var review = await _databaseContext.Reviews.FirstOrDefaultAsync(review => review.Id == reviewId);
+
+                if(review == null)
+                {
+                    return false;
+                }
+
+            review.Status = Status.Deleted;
+            review.DeletedAt = DateTime.UtcNow;
+            review.DeletedBy = deletedBy;
+            review.DeleteReason = reason;
+
+            await _databaseContext.SaveChangesAsync();
                 return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
+
     }
 }

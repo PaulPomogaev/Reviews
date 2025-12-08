@@ -3,7 +3,7 @@
     /// <summary>
     /// Отзыв
     /// </summary>
-    public class Feedback
+    public class Review
     {
         /// <summary>
         /// Id отзыва
@@ -20,6 +20,22 @@
         /// </summary>
         public int UserId { get; set; }
 
+                
+        /// <summary>
+        /// Дата и время удаления отзыва
+        /// </summary>
+        public DateTime? DeletedAt { get; set; }
+
+        /// <summary>
+        /// Кем удалён отзыв
+        /// </summary>
+        public string? DeletedBy { get; set; }
+
+        /// <summary>
+        /// Причина удаления отзыва
+        /// </summary>
+        public string? DeleteReason { get; set; }
+
         /// <summary>
         /// Текст отзыва
         /// </summary>
@@ -34,18 +50,12 @@
         /// Дата создания
         /// </summary>
         public DateTime CreateDate { get; set; }
+                
+        /// <summary>
+        /// Статус
+        /// </summary>
+        public Status Status { get; set; } = Status.Actual;
 
-        public int RatingId { get; set; }
-
-        public Rating Rating { get; set; }
-
-        public Status status { get; set; }
     }
 }
-public enum Status
-{
 
-    None = 0,
-    Actual = 1,
-    Deleted = 2
-}
