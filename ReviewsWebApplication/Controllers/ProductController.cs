@@ -31,5 +31,51 @@ namespace ReviewsWebApplication.Controllers
                 ReviewCount = actual.Count()
             };
         }
+
+        /// <summary>
+        /// Получение рейтингов нескольких товаров по списку ID
+        /// </summary>
+        /// <returns>Список рейтингов с ProductId</returns>
+        [HttpGet("ratings")]
+        public async Task<ActionResult<List<ProductRatingDtoWithId>>> GetProductRatings([FromQuery] string ids)
+        {
+            if(string.IsNullOrWhiteSpace(ids))
+            {
+                return BadRequest("Параметр запроса не содержит 'ids'");
+            }
+
+            var idStrings = ids.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var productIds = new List<int>();
+
+            foreach(var idString in idStrings)
+            {
+                if (int.TryParse(idString.Trim(), out var id) && id > 0)
+                {
+                    productIds.Add(id);
+                }
+            }
+
+            if (productIds.Count == 0)
+            {
+                return BadRequest("Не предоставлено валидных ID продуктов.");
+            }
+
+            var allReviews = await _reviewService.GetAllAsync();
+            var actualReviews = allReviews.Where(r => r.Status == Status.Actual && productIds.Contains(r.ProductId)).ToList();
+
+            var result = productIds.Select(productId =>
+            {
+                var reviewsForProduct = actualReviews.Where(r => r.ProductId == productId).ToList();
+                return new ProductRatingDtoWithId
+                {
+                    ProductId = productId,
+                    Rating = reviewsForProduct.Any() ? Math.Round(reviewsForProduct.Average(r => r.Grade), 2) : 0,
+                    ReviewCount = reviewsForProduct.Count
+                };
+            }).ToList();
+
+            return Ok(result);
+
+        }
     }
 }
