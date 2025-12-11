@@ -1,4 +1,4 @@
-﻿namespace ReviewsWebApplication.Dto
+﻿namespace Review.Domain.Models.Dto
 {
     public class ProductRatingDtoWithId
     {

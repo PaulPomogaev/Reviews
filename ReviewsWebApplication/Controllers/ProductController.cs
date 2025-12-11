@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Review.Domain.Models;
+using Review.Domain.Models.Dto;
 using Review.Domain.Services;
-using ReviewsWebApplication.Dto;
 
 namespace ReviewsWebApplication.Controllers
 {
@@ -45,34 +45,15 @@ namespace ReviewsWebApplication.Controllers
             }
 
             var idStrings = ids.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var productIds = new List<int>();
+            var productIds = idStrings.Select(s => s.Trim()).Where(s => int.TryParse(s, out _)).Select(int.Parse).Where(id => id > 0).Distinct().ToList();
 
-            foreach(var idString in idStrings)
-            {
-                if (int.TryParse(idString.Trim(), out var id) && id > 0)
-                {
-                    productIds.Add(id);
-                }
-            }
-
+            
             if (productIds.Count == 0)
             {
                 return BadRequest("Не предоставлено валидных ID продуктов.");
             }
 
-            var allReviews = await _reviewService.GetAllAsync();
-            var actualReviews = allReviews.Where(r => r.Status == Status.Actual && productIds.Contains(r.ProductId)).ToList();
-
-            var result = productIds.Select(productId =>
-            {
-                var reviewsForProduct = actualReviews.Where(r => r.ProductId == productId).ToList();
-                return new ProductRatingDtoWithId
-                {
-                    ProductId = productId,
-                    Rating = reviewsForProduct.Any() ? Math.Round(reviewsForProduct.Average(r => r.Grade), 2) : 0,
-                    ReviewCount = reviewsForProduct.Count
-                };
-            }).ToList();
+            var result = await _reviewService.GetProductRatingsByProductIdsAsync(productIds);
 
             return Ok(result);
 
