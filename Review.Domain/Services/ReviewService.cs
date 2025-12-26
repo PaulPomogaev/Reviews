@@ -1,5 +1,6 @@
 ﻿using Review.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Review.Domain.Models.Dto;
 
 namespace Review.Domain.Services
 {
@@ -61,6 +62,33 @@ namespace Review.Domain.Services
             await _databaseContext.SaveChangesAsync();
 
             return review;
+        }
+
+        public async Task<List<ProductRatingDtoWithId>> GetProductRatingsByProductIdsAsync(List<int> productIds)
+        {
+            if(productIds == null || productIds.Count == 0)
+            {
+                return new List<ProductRatingDtoWithId>();
+            }
+
+            var result = await _databaseContext.Reviews.Where(r => r.Status == Status.Actual && productIds.Contains(r.ProductId)).GroupBy(r => r.ProductId)
+                .Select(g => new ProductRatingDtoWithId
+                {
+                   ProductId = g.Key,
+                   Rating = Math.Round(g.Average(r => (double)r.Grade), 2),
+                   ReviewCount = g.Count()
+                })
+                 .ToListAsync();
+
+            var missingIds = productIds.Except(result.Select(x => x.ProductId)).ToList();
+            result.AddRange(missingIds.Select(id => new ProductRatingDtoWithId
+            {
+                ProductId = id,
+                Rating = 0,
+                ReviewCount = 0
+            }));
+
+            return result.OrderBy(x => productIds.IndexOf(x.ProductId)).ToList();
         }
     }
 }

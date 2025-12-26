@@ -1,4 +1,5 @@
 ﻿using Review.Domain.Models;
+using Review.Domain.Models.Dto;
 
 namespace Review.Domain.Services
 {
@@ -36,5 +37,11 @@ namespace Review.Domain.Services
         /// </summary>
         /// <returns>Новый отзыв пользователя</returns>
         Task<Models.Review> AddAsync(AddReviewRequest request);
+
+        /// <summary>
+        /// Получает рейтинги по списку Id продуктов
+        /// </summary>
+        /// <returns>Отфильтрованные по Id продуктов отзывы</returns>
+        Task<List<ProductRatingDtoWithId>> GetProductRatingsByProductIdsAsync(List<int> productIds);
     }
 }
